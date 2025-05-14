@@ -3,19 +3,21 @@ classdef enemyProjectile < handle
         xPos;
         yPos;
         bullet;
+        speed;
     end
     methods
         function obj = enemyProjectile(enemyObject)
             obj.xPos = enemyObject.xPos;
             obj.yPos = enemyObject.yPos;
             obj.bullet = rectangle('Position', [enemyObject.xPos, enemyObject.yPos, 1, 1], 'EdgeColor', 'k', 'LineWidth', 1, 'FaceColor', 'y', 'curvature', [1,1]);
+            obj.speed = 0.03;
         end
 
-        function projectileMove(obj, newXPos, newYPos)
-            obj.bullet.Position = [obj.xPos+newXPos, obj.yPos-newYPos, 1, 1];
-            uistack(obj.bullet, 'top');
-            obj.xPos = obj.xPos+newXPos;
-            obj.yPos = obj.yPos+newYPos;
+        function projectileMove(obj, xDist, yDist)
+            obj.xPos = obj.xPos+xDist*obj.speed;
+            obj.yPos = obj.yPos+yDist*obj.speed;
+            obj.bullet.Position = [obj.xPos, obj.yPos, 1, 1];
+            obj.xPos = obj.xPos+xDist*obj.speed;
             refresh
         end
 

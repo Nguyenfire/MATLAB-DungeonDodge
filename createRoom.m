@@ -1,5 +1,5 @@
 function [numEnemies, enemyList] = createRoom(level, player)
-    roomType = randi(10); % Chooses which room will be generated
+    roomType = randi(1); % Chooses which room will be generated
     enemyList = enemyObject.empty();
 
 if roomType <= 7 % Normal Room (70%)

@@ -112,11 +112,13 @@ rectangle('Position', [-30, -30, 60, 60], EdgeColor='k', LineWidth=1) % Outline 
 player = playerObject(-1, -30, healthPoints, speed);
 
 
-while isvalid(currentRoom)% while game is open
-   BGM.StopFcn = @(src, event) play(BGM);
+while isvalid(currentRoom) % while game is open
    if player.hP <=0
        close(currentRoom);
+       break;
    end
+   BGM.StopFcn = @(src, event) play(BGM);
+
    if numEnemies == 0
        portal = rectangle("Position", [-2, -4, 4, 8], 'EdgeColor', 'm', 'LineWidth', 2, 'FaceColor', 'm');
        move(keys, player);
@@ -135,12 +137,12 @@ while isvalid(currentRoom)% while game is open
    if exist("enemyList", "var")
        i = 1;
        j = 1;
-       while i <= numEnemies
+       while i <= numEnemies && isvalid(currentRoom)
            if j <= length(projectileList)
-               projectileList(j).projectileMove(0.25, 0.25)
-               distanceFromProjectile = calculateDistance(player, projectileList(j));
+               [distanceFromProjectile, xDistanceFromProjectile, yDistanceFromProjectile] = calculateDistance(player, projectileList(j));
+               projectileList(j).projectileMove(xDistanceFromProjectile, yDistanceFromProjectile);
            end
-           distanceFromEnemy = calculateDistance(player, enemyList(i));
+           [distanceFromEnemy, xDistanceFromEnemy, yDistanceFromEnemy] = calculateDistance(player, enemyList(i));
            if(distanceFromProjectile <= 3 && j <= length(projectileList))
                player.hP = player.hP - 1;
                player.entity.FaceColor = 'r';
@@ -167,11 +169,6 @@ while isvalid(currentRoom)% while game is open
    move(keys, player)
    end
 end
-
-clear("currentRoom");
-clear("keys");
-clear("player");
-
 
 if exist("BGM", "var")
     clear('BGM');

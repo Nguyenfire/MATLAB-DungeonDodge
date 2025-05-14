@@ -9,7 +9,6 @@ classdef enemyObject < handle
             obj.xPos = xPos;
             obj.yPos = yPos;
             obj.entity = rectangle('Position', [obj.xPos, obj.yPos, 2, 2], 'EdgeColor', 'k', 'LineWidth', 2, 'FaceColor', 'r');
-
         end
 
         function delete(obj)
