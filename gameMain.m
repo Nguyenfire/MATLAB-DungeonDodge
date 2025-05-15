@@ -2,8 +2,7 @@ clear;
 clc;
 numEnemies = 0;
 global keys
-global currentRoom;
-keys = struct('w', false, 's', false, 'a', false, 'd', false, 'space', false, 'f', false);
+keys = struct('w', false, 's', false, 'a', false, 'd', false, 'space', false);
 screenSize = get(0, 'ScreenSize'); %Gets size of screen
 enemiesKilled = 0;
 
@@ -43,20 +42,28 @@ end
 
 difficulty = input("What difficulty would you like to play? (Easy, Normal, Hard) \n", 's');
 if  difficulty == "easy" || difficulty == "Easy" % Changes base playerHealth depending on difficulty
-    healthPoints = 7;
+    healthPoints = 10;
     level = 1;
+    moveTime = 150;
+    enemySpeed = 0.03;
     disp("Easy Difficulty Selected")
 elseif difficulty == "normal" || difficulty == "Normal"
-    healthPoints = 5;
+    healthPoints = 7;
     level = 2;
+    moveTime = 200;
+    enemySpeed = 0.04;
     disp("Normal Difficulty Selected")
 elseif difficulty == "hard" || difficulty == "Hard"
-    healthPoints = 3;
+    healthPoints = 5;
     level = 3;
+    moveTime = 300;
+    enemySpeed = 0.05;
     disp("Hard Difficulty Selected")
 elseif difficulty == "hardcore" || difficulty == "Hardcore"
     healthPoints = 1;
-    level = 100;
+    level = 6;
+    moveTime = inf;
+    enemySpeed = 0.07;
     disp("Good luck :)")
 else
     error("You did not choose a difficulty, please run again");
@@ -97,10 +104,12 @@ end
 pause(1)
 
 
-instructions = sprintf("Instruction Box");
-instructionsBox = msgbox(instructions, 'GameInstructions');
+instructions = sprintf("Use WASD to move around the arena. \n" + ...
+    "Press space on the portal to move to the next room. \n" + ...
+    "Avoid the yellow balls and run into the red boxes to defeat them. \n" + ...
+    "Have fun!");
+instructionsBox = msgbox(instructions, 'Game Instructions');
 uiwait(instructionsBox)
-
 
 currentRoom = figure('KeyPressFcn', @keyPress, 'KeyReleaseFcn', @keyRelease); % creates figure
 set(currentRoom, 'Position', screenSize);
@@ -114,31 +123,32 @@ player = playerObject(-1, -30, healthPoints, speed);
 
 while isvalid(currentRoom) % while game is open
    if player.hP <=0
-       close(currentRoom);
+       close all;
        break;
    end
    BGM.StopFcn = @(src, event) play(BGM);
 
    if numEnemies == 0
        portal = rectangle("Position", [-2, -4, 4, 8], 'EdgeColor', 'm', 'LineWidth', 2, 'FaceColor', 'm');
+       player = playerObject(player.xPos, player.yPos, player.hP, speed);
        move(keys, player);
        cla;
        player = playerObject(player.xPos, player.yPos, player.hP, speed);
 
-       if (player.xPos >= -4 && player.xPos <= 2 && player.yPos >= -6 && player.yPos <= 4) && keys.f
+       if (player.xPos >= -4 && player.xPos <= 2 && player.yPos >= -6 && player.yPos <= 4) && keys.space
            cla;
            player = playerObject(-1, -30, player.hP, speed);
-           keys = struct('w', false, 's', false, 'a', false, 'd', false, 'space', false, 'f', false);
+           keys = struct('w', false, 's', false, 'a', false, 'd', false, 'space', false);
            [numEnemies, enemyList] = createRoom(level, player);
-           projectileList = createProjectileList(enemyList);
+           projectileList = createProjectileList(enemyList, enemySpeed);
        end
    end
 
    if exist("enemyList", "var")
        i = 1;
        j = 1;
-       while i <= numEnemies && isvalid(currentRoom)
-           if j <= length(projectileList)
+       while i <= numEnemies
+           if j <= length(projectileList) && projectileList(j).distanceTraveled < moveTime
                [distanceFromProjectile, xDistanceFromProjectile, yDistanceFromProjectile] = calculateDistance(player, projectileList(j));
                projectileList(j).projectileMove(xDistanceFromProjectile, yDistanceFromProjectile);
            end
@@ -146,13 +156,12 @@ while isvalid(currentRoom) % while game is open
            if(distanceFromProjectile <= 3 && j <= length(projectileList))
                player.hP = player.hP - 1;
                player.entity.FaceColor = 'r';
-               pause(0.01)
+               pause(0.03)
                player.entity.FaceColor = 'b';
                projectileList(j).deleteProjectile();
                projectileList(j) = [];
            end
            
-           %if (abs(player.xPos-enemyList(i).xPos) <= 2 && abs(player.yPos-enemyList(i).yPos) <= 2)
            if(distanceFromEnemy <= 2)
                enemyList(i).delete()
                enemyList(i) = [];
@@ -170,12 +179,17 @@ while isvalid(currentRoom) % while game is open
    end
 end
 
+close all;
+
 if exist("BGM", "var")
     clear('BGM');
 end
 
-[endScreen, sampleRateEndSong] = audioread('LivingMice.mp3');
-gameOver = audioplayer(endScreen, sampleRateEndSong);
-play(gameOver, 1);
+if (backGroundMusic == "None" || backGroundMusic == "none") == false
+    [endScreen, sampleRateEndSong] = audioread('LivingMice.mp3');
+    gameOver = audioplayer(endScreen, sampleRateEndSong);
+    play(gameOver, 1);
+end
+
 disp("You defeated " + enemiesKilled + " enemies!")
 disp("To play again, run program again (F5)");
