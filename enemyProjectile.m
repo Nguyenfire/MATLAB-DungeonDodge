@@ -20,7 +20,6 @@ classdef enemyProjectile < handle
             obj.yPos = obj.yPos+yDist*obj.speed;
             obj.bullet.Position = [obj.xPos, obj.yPos, 1, 1];
             obj.xPos = obj.xPos+xDist*obj.speed;
-            refresh
             obj.distanceTraveled = obj.distanceTraveled + 1;
         end
 

@@ -20,7 +20,6 @@ classdef playerObject < handle
             obj.yPos = newYPos;
             obj.entity.Position = [obj.xPos, obj.yPos, 2, 2];
             uistack(obj.entity, 'top');
-            refresh
         end
     end
 end

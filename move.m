@@ -17,4 +17,5 @@ rectangle('Position', [-30, -30, 60, 60], EdgeColor='k', LineWidth=1) % Outline 
 
 player.drawPlayer(x, y);
 pause(0.01)
+drawnow limitrate;
 end
