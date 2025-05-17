@@ -14,6 +14,10 @@ backGroundMusic = input("Would you like your music to be character based or rand
 startingBGM = audioplayer(song, sampleRate);
 play(startingBGM);
 
+[song, sampleRate] = audioread('UnwelcomeSchool.mp3'); % BGM For Starting Game
+restingBGM = audioplayer(song, sampleRate);
+play(startingBGM);
+
 instructions = sprintf("Use WASD to move around the arena. \n" + ...
     "Press space on the portal to move to the next room. \n" + ...
     "Avoid the yellow balls and run into the red boxes to defeat them. \n \n" + ...
