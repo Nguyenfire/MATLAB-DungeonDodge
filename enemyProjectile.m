@@ -1,4 +1,5 @@
 classdef enemyProjectile < handle
+    % Class for Enemy Projectiles
     properties
         xPos;
         yPos;
@@ -15,7 +16,7 @@ classdef enemyProjectile < handle
             obj.distanceTraveled = 0;
         end
 
-        function projectileMove(obj, xDist, yDist)
+        function projectileMove(obj, xDist, yDist) % Moves the projectile
             obj.xPos = obj.xPos+xDist*obj.speed;
             obj.yPos = obj.yPos+yDist*obj.speed;
             obj.bullet.Position = [obj.xPos, obj.yPos, 1, 1];
