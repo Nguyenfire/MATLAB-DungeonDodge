@@ -2,7 +2,7 @@ function [numEnemies, enemyList] = createRoom(level, player)
 % Creates Room of Enemies
     global combatBGM;    
     global restingBGM;
-    
+
     roomType = randi(10); % Chooses which room will be generated
     enemyList = enemyObject.empty();
 

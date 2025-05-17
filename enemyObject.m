@@ -15,9 +15,5 @@ classdef enemyObject < handle
         function delete(obj) % Deletes the visual object
             delete(obj.entity);
         end
-
-        function redrawEnt(obj)
-            obj.entity = rectangle('Position', [obj.xPos, obj.yPos, 2, 2], 'EdgeColor', 'k', 'LineWidth', 2, 'FaceColor', 'r');
-        end
     end
 end

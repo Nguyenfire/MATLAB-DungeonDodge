@@ -8,11 +8,10 @@ keys = struct('w', false, 's', false, 'a', false, 'd', false, 'space', false);
 screenSize = get(0, 'ScreenSize'); %Gets size of screen
 enemiesKilled = 0;
 
-backGroundMusic = input("Would you like your music to be character based or random? (Character/Random) \n" , 's');
-
-[song, sampleRate] = audioread('ConstantModerato.mp3'); % BGM For Starting Game
+[song, sampleRate] = audioread('emptyAudio.mp3');
 startingBGM = audioplayer(song, sampleRate);
-play(startingBGM);
+restingBGM = audioplayer(song, sampleRate);
+combatBGM = audioplayer(song, sampleRate);
 
 instructions = sprintf("Use WASD to move around the arena. \n" + ...
     "Press space on the portal to move to the next room. \n" + ...
@@ -24,26 +23,6 @@ instructions = sprintf("Use WASD to move around the arena. \n" + ...
 
 instructionsBox = msgbox(instructions, 'Game Instructions'); % Loads Instructions, waits until UI is closed to continue)
 uiwait(instructionsBox)
-
-if backGroundMusic == "random" || backGroundMusic == "Random" % Random music selector
-    random = randi(5);
-    if random == 1
-        [song, sampleRate] = audioread('ReDashMOG.mp3');
-        combatBGM = audioplayer(song, sampleRate);
-    elseif random == 2 
-        [song, sampleRate] = audioread('Unbreakable_Instrumental.mp3');
-        combatBGM = audioplayer(song, sampleRate);
-    elseif random == 3
-        [song, sampleRate] = audioread('OriginalMe_Instrumental.mp3');
-        combatBGM = audioplayer(song, sampleRate);
-    elseif random == 4
-        [song, sampleRate] = audioread('bite.mp3');
-        combatBGM = audioplayer(song, sampleRate);
-    else
-        [song, sampleRate] = audioread('Sweden.mp3');
-        combatBGM = audioplayer(song, sampleRate);
-    end
-end
 
 difficulty = input("What difficulty would you like to play? (Easy, Normal, Hard) \n", 's');
 if difficulty == "easy" || difficulty == "Easy" % Changes base playerHealth, enemySpeed, enemy count, 
@@ -79,28 +58,16 @@ if character == "Samurai" || character == "samurai"      % Checks for keyword 's
     healthPoints = floor(healthPoints/2);                % Sets new values based on character
     speed = 0.3;
     disp("Samurai Selected");
-    if backGroundMusic == "Character" || backGroundMusic == "character" % BGM for samurai
-        [song, sampleRate] = audioread('CamelliaInstrumental.mp3');
-        combatBGM = audioplayer(song, sampleRate);
-    end
 
 elseif character == "Knight" || character == "knight"  % Same as above, except with different Character values and BGM
     speed = 0.5;
     disp("Knight Selected")
-    if backGroundMusic == "Character" || backGroundMusic == "character"
-        [song, sampleRate] = audioread('clarionCallInstrumental.mp3');
-        combatBGM = audioplayer(song, sampleRate);
-    end
-
+    
 elseif character == "Soldier" || character == "soldier" % Same as above, except with different Character values and BGM
     healthPoints = healthPoints*2;
     speed = 0.2;
     disp("Soldier Selected")
-    if backGroundMusic == "Character" || backGroundMusic == "character"
-        [song, sampleRate] = audioread('theRedHoodInstrumental.mp3');
-        combatBGM = audioplayer(song, sampleRate);
-    end
-
+    
 else
     error("You did not choose a character, please run again");
 end
@@ -175,13 +142,6 @@ while isvalid(currentRoom) % while game is open
 end
 
 close all;
-
-stop(combatBGM);
-stop(restingBGM);
-
-[endScreen, sampleRateEndSong] = audioread('LivingMice.mp3'); % Ending Music
-gameOver = audioplayer(endScreen, sampleRateEndSong);
-play(gameOver);
 
 endScreenText = sprintf("You defeated %d enemes! \n To play again, close this window and run the program again", enemiesKilled);
 endScreenBox = msgbox(endScreenText, 'End Screen'); % Loads Instructions, waits until UI is closed to continue)
