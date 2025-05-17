@@ -1,2 +1,0 @@
-ONLY RUN "gameMain.m" or "gameMainNoBGM.m"
-If you don't want BGM run gameMainNoBGM and download emptyAudio.mp3, otherwise see audios file
